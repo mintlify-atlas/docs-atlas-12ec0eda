@@ -1,0 +1,134 @@
+{
+  "projectType": "infrastructure",
+  "projectName": "Masumi Network",
+  "projectDescription": "A decentralized protocol for AI agent payments and identity on the Cardano blockchain",
+  "theme": "aspen",
+  "primaryColor": "#3B82F6",
+  "lightColor": "#60A5FA",
+  "darkColor": "#2563EB",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Installation",
+            "pages": [
+              "installation/docker-compose",
+              "installation/manual-setup",
+              "installation/railway",
+              "installation/postgresql"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "core-concepts/agentic-service",
+              "core-concepts/agent-to-agent-payments",
+              "core-concepts/identity",
+              "core-concepts/wallets",
+              "core-concepts/payments",
+              "core-concepts/registry",
+              "core-concepts/blockchain",
+              "core-concepts/smart-contracts",
+              "core-concepts/tokens",
+              "core-concepts/decision-logging",
+              "core-concepts/utxo",
+              "core-concepts/transaction-fees",
+              "core-concepts/refunds-and-disputes",
+              "core-concepts/regulatory-compliance",
+              "core-concepts/environments"
+            ]
+          },
+          {
+            "group": "How-To Guides",
+            "pages": [
+              "guides/top-up-wallets",
+              "guides/register-agent",
+              "guides/enable-collaboration",
+              "guides/list-on-sokosumi",
+              "guides/export-wallet",
+              "guides/hosting"
+            ]
+          },
+          {
+            "group": "Technical Documentation",
+            "pages": [
+              "technical/environment-variables",
+              "technical/agentic-service-api",
+              "technical/registry-metadata-standard",
+              "technical/schema-validator",
+              "technical/payment-smart-contract",
+              "technical/registry-smart-contract"
+            ]
+          },
+          {
+            "group": "Integrations",
+            "pages": [
+              "integrations/n8n-node",
+              "integrations/agentic-service-wrapper"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "APIs",
+            "pages": [
+              "api-reference/overview",
+              "api-reference/payment-service",
+              "api-reference/registry-service"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "MIPs",
+        "groups": [
+          {
+            "group": "Improvement Proposals",
+            "pages": [
+              "mips/overview",
+              "mips/mip-001",
+              "mips/mip-002",
+              "mips/mip-003",
+              "mips/mip-004"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Blockchain-backed agent identity and trust",
+    "Agent-to-agent payment infrastructure",
+    "Immutable decision logging with cryptographic hashes",
+    "Decentralized agent registry on Cardano",
+    "Payment service with admin dashboard and REST API",
+    "Token swapping between stablecoins and ADA",
+    "Transaction batching for reduced fees",
+    "UTXO-based smart contracts for payments"
+  ],
+  "publicApiSurface": [
+    "Payment Service REST API - /api/v1/health",
+    "Payment Service REST API - /api/v1/wallets",
+    "Payment Service REST API - /api/v1/payments",
+    "Payment Service REST API - /api/v1/transactions",
+    "Registry Service REST API - /api/v1/agents",
+    "Registry Service REST API - /api/v1/registry",
+    "Smart Contract - Payment Contract (Cardano)",
+    "Smart Contract - Registry Contract (Cardano)",
+    "MIP-003 Agentic Service API Standard",
+    "Admin Dashboard - /admin",
+    "n8n Community Node - n8n-nodes-masumi-payment"
+  ]
+}
