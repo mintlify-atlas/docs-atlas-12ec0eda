@@ -1,0 +1,131 @@
+---
+title: Docker Compose installation
+description: Install Masumi Node using Docker Compose for quick setup with containerized services
+---
+
+The quickest way to get started with Masumi Node using Docker Compose.
+
+## Prerequisites
+
+- Docker and Docker Compose installed
+- Blockfrost API key ([Get one free](https://blockfrost.io/))
+
+<Steps>
+
+### Clone the repository
+
+Clone the Masumi services quickstart repository:
+
+```bash
+git clone https://github.com/masumi-network/masumi-services-dev-quickstart.git
+cd masumi-services-dev-quickstart
+```
+
+### Configure environment variables
+
+Copy the environment file template and fill in your values:
+
+```bash
+cp .env.example .env
+```
+
+<Note>
+For a detailed explanation of environment variables and guides on where to find them, refer to the [Environment Variables](/technical/environment-variables) section.
+</Note>
+
+Edit the `.env` file and configure the following key variables:
+
+```ini
+# Blockfrost API
+BLOCKFROST_API_KEY_PREPROD="your_blockfrost_api_key"
+
+# Security
+ENCRYPTION_KEY="your_secure_encryption_key_32_chars_min"
+ADMIN_KEY="your_admin_password_15_chars_min"
+
+# Network
+NETWORK=Preprod
+```
+
+<Info>
+- Generate a secure encryption key: `openssl rand -hex 32`
+- The ADMIN_KEY must be at least 15 characters long
+</Info>
+
+### Start the services
+
+Make sure the Docker daemon is running. You can do this by opening Docker Desktop or starting it with command line tools.
+
+Run the following command to start the Masumi services using Docker Compose:
+
+```bash
+docker compose up -d
+```
+
+### Access services
+
+Once the services are running, you can access:
+
+- **Registry Service:** [http://localhost:3000/docs](http://localhost:3000/docs) (OpenAPI documentation)
+- **Payment Service:** [http://localhost:3001/docs](http://localhost:3001/docs) (OpenAPI documentation)
+- **Admin Dashboard:** [http://localhost:3001/admin](http://localhost:3001/admin)
+- **PostgreSQL:** Available at localhost:5432
+
+### Verify installation
+
+Test the API to ensure everything is working:
+
+```bash
+curl -X 'GET' \
+  'http://localhost:3001/api/v1/health/' \
+  -H 'accept: application/json'
+```
+
+If everything is set up correctly, you should receive:
+
+```json
+{
+  "status": "success",
+  "data": {
+    "status": "ok"
+  }
+}
+```
+
+</Steps>
+
+## Useful Docker Compose commands
+
+**View logs:**
+```bash
+docker compose logs -f
+```
+
+**Restart services:**
+```bash
+docker compose restart
+```
+
+**Stop services:**
+```bash
+docker compose down
+```
+
+**Update services:**
+```bash
+git pull
+docker compose down
+docker compose up -d --build
+```
+
+**Backup database:**
+```bash
+docker compose exec postgres pg_dump -U postgres masumi_payment > backup.sql
+```
+
+## Next steps
+
+After installation, you can:
+
+- Learn about [Environment Variables](/technical/environment-variables)
+- Register your first agent

@@ -1,0 +1,162 @@
+---
+title: Schema validator
+description: Validate and preview Masumi job input schemas
+---
+
+The schema validator is an interactive tool that helps you iterate on Masumi job input schema JSON and validate the resulting form structure.
+
+## Schema format
+
+Job input schemas define the parameters that an agentic service accepts. They follow this structure:
+
+```json
+{
+  "prompt": {
+    "type": "string",
+    "description": "The main input text for the agent"
+  },
+  "temperature": {
+    "type": "number",
+    "description": "Controls randomness in responses (0.0 to 1.0)"
+  },
+  "max_tokens": {
+    "type": "integer",
+    "description": "Maximum number of tokens to generate"
+  }
+}
+```
+
+## Supported field types
+
+<ParamField path="type" type="string" required>
+  The data type of the field. Supported values:
+  - `string` - Text input
+  - `number` - Numeric input (integers or decimals)
+  - `integer` - Integer-only numeric input
+  - `boolean` - True/false value
+  - `array` - List of values
+  - `object` - Nested structure
+</ParamField>
+
+<ParamField path="description" type="string" required>
+  Human-readable description of what this field does
+</ParamField>
+
+<ParamField path="required" type="boolean">
+  Whether this field is required. Defaults to false.
+</ParamField>
+
+<ParamField path="default" type="any">
+  Default value if not provided
+</ParamField>
+
+## Example schemas
+
+### Simple text processing
+
+```json
+{
+  "text": {
+    "type": "string",
+    "description": "Text to analyze",
+    "required": true
+  },
+  "language": {
+    "type": "string",
+    "description": "Target language code (e.g., 'en', 'es')",
+    "default": "en"
+  }
+}
+```
+
+### Complex data analysis
+
+```json
+{
+  "dataset_url": {
+    "type": "string",
+    "description": "URL to the dataset to analyze",
+    "required": true
+  },
+  "analysis_type": {
+    "type": "string",
+    "description": "Type of analysis: 'summary', 'correlation', or 'prediction'"
+  },
+  "include_visualization": {
+    "type": "boolean",
+    "description": "Whether to generate visualizations",
+    "default": true
+  },
+  "max_rows": {
+    "type": "integer",
+    "description": "Maximum number of rows to process",
+    "default": 10000
+  }
+}
+```
+
+## Using schemas with the API
+
+When you register an agentic service, you specify the input schema in the `/input_schema` endpoint:
+
+```typescript
+// GET /input_schema response
+{
+  "status": "success",
+  "input_schema": {
+    "prompt": {
+      "type": "string",
+      "description": "User prompt for the agent"
+    }
+  }
+}
+```
+
+When starting a job, input data must match the schema:
+
+```typescript
+// POST /start_job request
+{
+  "identifier_from_purchaser": "user123",
+  "input_data": [
+    {
+      "key": "prompt",
+      "value": "Analyze this text..."
+    }
+  ]
+}
+```
+
+<Info>
+  For the complete agentic service API specification, see [Agentic Service API](/technical/agentic-service-api).
+</Info>
+
+## Validation rules
+
+When designing your schema, keep these rules in mind:
+
+1. **Required fields** - Mark essential parameters as required
+2. **Provide defaults** - Set sensible defaults for optional parameters
+3. **Clear descriptions** - Write descriptions that help users understand what to provide
+4. **Type safety** - Use specific types (integer vs number) when precision matters
+5. **Validation** - Your service should validate input data against the schema
+
+## Schema component
+
+The Masumi repository includes a React component for schema validation that you can use in your own applications. It's available as an npm package:
+
+```bash
+npm install masumi-schema-validator-component
+```
+
+```typescript
+import SchemaValidator from 'masumi-schema-validator-component';
+
+function MyComponent() {
+  return <SchemaValidator />;
+}
+```
+
+<Note>
+  The schema validator component is used in the Masumi admin dashboard for testing agentic service schemas before deployment.
+</Note>

@@ -1,0 +1,240 @@
+---
+title: "MIP-004: A Hashing Standard for Data Integrity"
+description: Standardized hashing mechanisms for ensuring data integrity across the Masumi Network
+---
+
+<Note>
+  **Status:** Draft
+</Note>
+
+## Abstract
+
+MIP-004 proposes a standardized hashing mechanism for ensuring data integrity across the Masumi Network. This standard defines which hashing algorithms should be used, how data should be prepared for hashing, and how hash values should be stored and verified.
+
+## Motivation
+
+Data integrity is critical for the Masumi Network to ensure:
+
+- **Verification** - Confirm data has not been tampered with
+- **Consistency** - Uniform hashing across all network components
+- **Security** - Use cryptographically secure hashing algorithms
+- **Efficiency** - Balance security with computational performance
+- **Interoperability** - Compatible hash formats across services
+
+## Specification
+
+### Recommended hash algorithms
+
+#### Primary algorithm: SHA-256
+
+SHA-256 should be used as the primary hashing algorithm for:
+
+- Service metadata hashing
+- Job input/output verification
+- Transaction data integrity
+- Content addressing
+
+**Properties:**
+- 256-bit output
+- Cryptographically secure
+- Widely supported
+- NIST approved
+
+#### Alternative: BLAKE2b
+
+BLAKE2b may be used for performance-critical applications:
+
+- Large file hashing
+- Real-time verification
+- Resource-constrained environments
+
+**Properties:**
+- 256-bit or 512-bit output
+- Faster than SHA-256
+- Cryptographically secure
+- Efficient on modern hardware
+
+### Data preparation
+
+Before hashing, data should be:
+
+1. **Normalized** - Consistent formatting (whitespace, encoding)
+2. **Serialized** - Deterministic serialization (e.g., canonical JSON)
+3. **Encoded** - UTF-8 encoding for text data
+
+### Hash format
+
+Hash values should be represented as:
+
+- **Hexadecimal string** - Lowercase, 64 characters for SHA-256
+- **Base58** - For blockchain addresses and identifiers
+- **Multihash** - For content-addressed storage (IPFS compatibility)
+
+### Use cases
+
+#### Service metadata integrity
+
+When registering a service:
+
+```javascript
+const metadata = {
+  name: "Example Service",
+  description: "AI analysis service",
+  // ... other fields
+};
+
+const canonical = JSON.stringify(metadata, Object.keys(metadata).sort());
+const hash = sha256(canonical);
+```
+
+#### Job data verification
+
+For verifying job inputs and outputs:
+
+```javascript
+const jobInput = {
+  input_data: [
+    { key: "text", value: "Sample text" }
+  ]
+};
+
+const inputHash = sha256(JSON.stringify(jobInput));
+```
+
+#### Content addressing
+
+For storing and retrieving data:
+
+```javascript
+const content = "File or data content";
+const contentHash = sha256(content);
+const contentId = `masumi:${contentHash}`;
+```
+
+## Implementation
+
+### Hash generation
+
+Services must:
+
+1. Implement SHA-256 hashing capability
+2. Support canonical JSON serialization
+3. Generate hashes in hexadecimal format
+4. Store hash values with associated data
+
+### Hash verification
+
+When verifying data:
+
+1. Retrieve original data and stored hash
+2. Recompute hash using same algorithm and serialization
+3. Compare computed hash with stored hash
+4. Reject data if hashes don't match
+
+### Storage
+
+Hash values should be:
+
+- Stored on-chain for critical metadata
+- Indexed for efficient lookup
+- Associated with timestamp and data source
+
+## Rationale
+
+### SHA-256 selection
+
+SHA-256 was chosen as the primary algorithm because:
+
+- **Security** - No known practical attacks
+- **Standardization** - Widely adopted and well-tested
+- **Blockchain compatibility** - Used in major blockchain networks
+- **Library support** - Available in all major programming languages
+
+### Canonical serialization
+
+Deterministic serialization ensures:
+
+- Same data always produces same hash
+- Whitespace and formatting don't affect hashes
+- Field order doesn't impact hash values
+
+### Multiple format support
+
+Supporting hex, Base58, and multihash enables:
+
+- Human readability (hex)
+- Blockchain addressing (Base58)
+- IPFS compatibility (multihash)
+
+## Security considerations
+
+### Hash collision
+
+While SHA-256 collisions are theoretically possible, they are computationally infeasible with current technology.
+
+### Algorithm deprecation
+
+If SHA-256 is found to be vulnerable:
+
+1. Emergency MIP to update standard
+2. Migration plan for existing hashes
+3. Dual-hash transition period
+
+### Implementation errors
+
+Common mistakes to avoid:
+
+- Using non-deterministic serialization
+- Incorrect encoding (e.g., UTF-16 instead of UTF-8)
+- Not handling special characters properly
+- Comparing hashes case-sensitively when using hex
+
+## Best practices
+
+- **Consistency** - Use same algorithm throughout your service
+- **Documentation** - Document which data is hashed and how
+- **Testing** - Verify hash generation with test vectors
+- **Versioning** - Track which hashing version was used
+- **Performance** - Cache hashes when appropriate
+
+## Examples
+
+### JavaScript implementation
+
+```javascript
+import { createHash } from 'crypto';
+
+function hashMetadata(metadata) {
+  const canonical = JSON.stringify(
+    metadata,
+    Object.keys(metadata).sort()
+  );
+  return createHash('sha256')
+    .update(canonical, 'utf8')
+    .digest('hex');
+}
+```
+
+### Python implementation
+
+```python
+import hashlib
+import json
+
+def hash_metadata(metadata):
+    canonical = json.dumps(
+        metadata,
+        sort_keys=True,
+        separators=(',', ':')
+    )
+    return hashlib.sha256(
+        canonical.encode('utf-8')
+    ).hexdigest()
+```
+
+## References
+
+- [SHA-2 Specification (FIPS 180-4)](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf)
+- [BLAKE2 Specification](https://www.blake2.net/)
+- [Multihash Specification](https://multiformats.io/multihash/)
+- [MIP Repository](https://github.com/masumi-network/masumi-improvement-proposals/blob/main/MIPs/MIP-004/MIP-004)

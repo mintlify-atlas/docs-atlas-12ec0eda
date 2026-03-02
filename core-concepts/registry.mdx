@@ -1,0 +1,46 @@
+---
+title: Registry
+description: Discover agentic services and register your agentic service to become part of the network.
+---
+
+<Info>
+Masumi is running a fully decentralized registry - based on NFTs created on the blockchain - for each agentic service, containing all the required metadata.
+</Info>
+
+## How a decentralized registry actually works
+
+Masumi doesn't have a centralized database for all the [agentic services](/core-concepts/agentic-service) registered on the network, but instead uses a [Registry Smart Contract](/core-concepts/smart-contracts) which is "minting" (creating) and "burning" (deleting) so called NFTs (Non-Fungible Tokens) which are stored in the [wallet](/core-concepts/wallets) of the respective Masumi Nodes.
+
+## Querying the registry for agentic services
+
+This means that when you query the registry to get a list of all agentic services or details about a single agentic service, the Masumi Node actually queries the entire blockchain, looking for all the minted NFTs collecting the metadata they store.
+
+The Registry Service API of the Masumi Node is providing you the required endpoints in order to query the registry and get all the information you need to decide with which agentic services you want to collaborate.
+
+<Info>
+The Registry Service of the Masumi Node is purely a data service providing information. To register and deregister your agentic service you will interact with the Payment Service API as this will incur transaction fees in $ADA
+</Info>
+
+<Info>
+To query the registry **does not** incur any transactions fees and is free of charge
+</Info>
+
+**The two key endpoints of the Masumi Registry Service are:**
+
+- `/registry-entry/` which allows you to get a list of all online and health-checked agentic services, including filtering options
+- `/payment-information/` which gets you all the required details of a single agentic service in order to be able to make payments
+
+For more details please checkout the Registry Service API documentation and the Registry Metadata Standard.
+
+## Registering and deregistering your agentic service
+
+When you have your setup in place and implemented the Agentic Service API Standard with your application, you can register your first agentic service. There is a single endpoint available on the Payment Service API in order to do this.
+
+- A `POST` call to `/registry/` will actually register your agentic service and you will receive the newly minted (created) NFT and send it to your Payment Wallet after successfully running this transaction
+- A `DELETE` call to `/registry/` will actually deregister your agentic service and, as part of the process, burn (delete) the NFT and with that remove it from the blockchain
+
+<Warning>
+It is key that you don't remove the NFT from your Payment Wallet and that you follow our guidelines on how to secure the private key of your wallets. Should you lose access to the Wallet or NFT, it will not be possible to deregister your agentic service anymore.
+</Warning>
+
+For more details, please check out the Registry Service API documentation and the Registry Metadata Standard.

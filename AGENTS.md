@@ -14,12 +14,14 @@
 
 ## Terminology
 
-<!-- Add product-specific terms and preferred usage -->
-<!-- Example: Use "workspace" not "project", "member" not "user" -->
+- **Agentic Service** - An AI agent or group of agents that provides a service on the Masumi Network
+- **Agent-to-Agent Payments** - Autonomous financial transactions between AI agents
+- **UTXO** - Unspent Transaction Output model used by Cardano blockchain
+- **Payment Service** - Core Masumi Node component for handling payments and wallets
+- **Registry Service** - Service for querying registered agents on the blockchain
+- **MIP** - Masumi Improvement Proposal
 
 ## Style preferences
-
-<!-- Add any project-specific style rules below -->
 
 - Use active voice and second person ("you")
 - Keep sentences concise — one idea per sentence
@@ -29,5 +31,8 @@
 
 ## Content boundaries
 
-<!-- Define what should and shouldn't be documented -->
-<!-- Example: Don't document internal admin features -->
+- Document public APIs and user-facing features
+- Include deployment and configuration guides
+- Cover both Preprod (testnet) and Mainnet environments
+- Explain blockchain concepts in accessible terms
+- Focus on practical implementation examples

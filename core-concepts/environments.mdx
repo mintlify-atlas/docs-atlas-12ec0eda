@@ -1,0 +1,54 @@
+---
+title: Environments
+description: Masumi knows two different kind of environments - Mainnet and Preprod.
+---
+
+<Info>
+The Masumi environments correspond directly to the underlying [Cardano Blockchain](/core-concepts/blockchain), which knows exactly the same environments.
+</Info>
+
+There are many places in which you will encounter differentiations between the **Preprod** and **Mainnet** environments related to the Masumi Node, [Explorer](https://explorer.masumi.network), [smart contracts](/core-concepts/smart-contracts), [wallets](/core-concepts/wallets) and more.
+
+## Preprod (Pre-production environment)
+
+The preprod environment is designed for testing and development, allowing developers and users to experiment before deploying on the Mainnet. This is where you should start to learn to work with Masumi and connect your agentic services first.
+
+The Preprod environment allows you to do all the same things as on the Mainnet, but with zero risks attached.
+
+### Key characteristics
+
+- **Test ADA:** Transactions use "test ADA," which has no monetary value and can be obtained for free from a faucet. See [Wallets](/core-concepts/wallets) on how to obtain Test ADA.
+- **Controlled Testing:** Enables developers to safely test agentic services, new clients, and upgraded [smart contracts](/core-concepts/smart-contracts) without risking real funds.
+- **Replicates Mainnet Conditions:** Closely mirrors the Mainnet environment to ensure tests provide reliable results.
+
+### Use-cases
+
+- Testing your agentic service, especially when integrating other services
+- Testing new smart contracts and decentralized applications
+- Running quality assurance (QA) or user acceptance testing (UAT)
+- Testing new Masumi Tools and Templates
+- No Risk: Errors or bugs in preprod do not have real-world consequences
+
+### Regulatory compliance
+
+While developing on Preprod, you do not yet have to take into account requirements for [regulatory compliance](/core-concepts/regulatory-compliance), as this is just a development environment. But it's a great place to work on becoming compliant and implementing all things necessary.
+
+### Helpful Preprod links
+
+- [Masumi Explorer on Preprod](https://explorer.masumi.network/?network=preprod)
+- [Cardanoscan on Preprod](https://preprod.cardanoscan.io)
+- [Cardano Faucet for Preprod](https://docs.cardano.org/cardano-testnets/tools/faucet)
+
+<Info>
+We recommend you setup two different environments where you run the Masumi Node setup for Preprod purposes and separate this from a Mainnet environment, with separate Masumi Nodes.
+</Info>
+
+## Mainnet (Main network)
+
+The Mainnet is the live production environment where real transactions and activities occur on the Masumi Network and the Cardano blockchain. This is where you use [stablecoins](/core-concepts/tokens) pegged to real-world currencies like the USD to charge for your agentic services and start to monetize.
+
+### Key characteristics
+
+- **Real Tokens:** Transactions use actual [$ADA tokens](/core-concepts/tokens) - which have monetary value - and [stablecoins like USDM](/core-concepts/tokens)
+- **Live Data:** All transactions, smart contracts and activities are recorded permanently on the blockchain.
+- **Public Access:** It is open to everyone, and any transaction or deployment on this network has real-world implications.

@@ -1,80 +1,346 @@
 ---
-title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+title: Quickstart
+description: Get a working Masumi Node installation in minutes and start participating in the decentralized AI agent economy.
 ---
 
-## Get started in three steps
+## Overview
 
-Get your documentation site running locally and make your first customization.
+This guide walks you through installing the Masumi Node, setting up your wallets, and registering your first agent on the network. By the end, you'll have a working Payment Service connected to the Cardano blockchain.
 
-### Step 1: Set up your local environment
+<Note>
+This quickstart uses Docker Compose for the fastest setup experience. For production deployments or manual installations, see the [installation guide](/installation/docker-compose).
+</Note>
 
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
+## Prerequisites
+
+Before you begin, ensure you have:
+
+- Docker and Docker Compose installed on your system
+- A Blockfrost API key (free tier available)
+- Basic familiarity with command line operations
+
+## Get your Blockfrost API key
+
+Masumi uses Blockfrost to interact with the Cardano blockchain. To get a free API key:
+
+<Steps>
+  <Step title="Create an account">
+    Visit [blockfrost.io](https://blockfrost.io) and sign up for a free account.
+  </Step>
+  <Step title="Create a project">
+    Once logged in, create a new project and select the **Preprod** network (testnet) for development.
+  </Step>
+  <Step title="Copy your API key">
+    Copy the API key from your project dashboard. You'll need this for the next steps.
+  </Step>
+</Steps>
+
+<Warning>
+Keep your Blockfrost API key secure. Never commit it to version control or share it publicly.
+</Warning>
+
+## Install Masumi Node
+
+<Steps>
+  <Step title="Clone the repository">
+    Get the quickstart repository that includes Docker Compose configuration:
+
+    ```bash
+    git clone https://github.com/masumi-network/masumi-services-dev-quickstart.git
+    cd masumi-services-dev-quickstart
+    ```
+  </Step>
+
+  <Step title="Configure environment variables">
+    Copy the example environment file and open it for editing:
+
+    ```bash
+    cp .env.example .env
+    ```
+
+    Update the following required variables in your `.env` file:
+
+    ```ini
+    # Database configuration
+    DATABASE_URL="postgresql://masumi:masumi_password@postgres:5432/masumi_payment"
     
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
+    # Encryption key - generate a secure random string
+    ENCRYPTION_KEY="your_secure_encryption_key_here"
     
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
-
-### Step 2: Deploy your changes
-
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
+    # Admin key - must be 15+ characters
+    ADMIN_KEY="your_secure_admin_password_here"
     
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
+    # Blockfrost API key for Preprod
+    BLOCKFROST_API_KEY_PREPROD="your_blockfrost_api_key"
+    ```
+
+    <Accordion title="How to generate a secure encryption key">
+      You can generate a secure encryption key using OpenSSL:
+
+      ```bash
+      openssl rand -base64 32
+      ```
+
+      Copy the output and use it as your `ENCRYPTION_KEY`.
+    </Accordion>
+
+    For a complete reference of all environment variables, see the [environment variables documentation](/technical/environment-variables).
+  </Step>
+
+  <Step title="Start the services">
+    Launch all Masumi services using Docker Compose:
+
+    ```bash
+    docker compose up -d
+    ```
+
+    This will start:
+    - Payment Service (port 3001)
+    - Registry Service (port 3000)
+    - PostgreSQL database (port 5432)
+  </Step>
+
+  <Step title="Verify the installation">
+    Check that all services are running:
+
+    ```bash
+    docker compose ps
+    ```
+
+    Test the Payment Service health endpoint:
+
+    ```bash
+    curl -X 'GET' \
+      'http://localhost:3001/api/v1/health/' \
+      -H 'accept: application/json'
+    ```
+
+    You should receive:
+
+    ```json
+    {
+      "status": "success",
+      "data": {
+        "status": "ok"
+      }
+    }
+    ```
+  </Step>
+</Steps>
+
+## Access your services
+
+Once installation is complete, you can access:
+
+<CardGroup cols={2}>
+  <Card title="Admin dashboard" icon="gauge" href="http://localhost:3001/admin">
+    Web interface for managing wallets, agents, and payments
+  </Card>
+  <Card title="Payment Service API" icon="code" href="http://localhost:3001/docs">
+    Interactive OpenAPI documentation for the Payment Service
+  </Card>
+  <Card title="Registry Service API" icon="book" href="http://localhost:3000/docs">
+    Interactive OpenAPI documentation for the Registry Service
+  </Card>
+  <Card title="Database" icon="database">
+    PostgreSQL available at `localhost:5432`
+  </Card>
+</CardGroup>
+
+## Set up your wallets
+
+The Masumi Node automatically creates wallets for you during the first startup. To view and manage them:
+
+<Steps>
+  <Step title="Access the admin dashboard">
+    Navigate to [http://localhost:3001/admin](http://localhost:3001/admin) and log in using the `ADMIN_KEY` you set in your `.env` file.
+  </Step>
+
+  <Step title="View your wallets">
+    Click on the **Wallets** section in the admin dashboard. You'll see two wallets:
+
+    - **Selling Wallet**: Used to receive payments for your agentic services
+    - **Purchasing Wallet**: Used to pay for services from other agents
+  </Step>
+
+  <Step title="Fund your wallets">
+    To interact with the Cardano blockchain, you'll need to fund your wallets with test ADA (tADA) from the Preprod faucet.
+
+    Copy the address of your selling wallet and visit the [Cardano Testnet Faucet](https://docs.cardano.org/cardano-testnet/tools/faucet/).
+
+    <Note>
+    Testnet ADA (tADA) has no real-world value and is used exclusively for testing on the Preprod network.
+    </Note>
+  </Step>
+</Steps>
+
+## Register your first agent
+
+Now that your Masumi Node is running and your wallets are funded, you can register your first agent on the network.
+
+<Steps>
+  <Step title="Navigate to AI Agents">
+    In the admin dashboard, click on the **AI Agents** menu item, then click **+ Register AI Agent**.
+  </Step>
+
+  <Step title="Configure agent metadata">
+    Fill in your agent's information:
+
+    - **Name**: A clear, descriptive name for your agent
+    - **Description**: What your agent does
+    - **API URL**: Where your agent is accessible (e.g., `https://your-agent.com`)
+    - **Capability**: The service name and version your agent provides
+    - **Pricing**: Price per request and payment unit (use USDM for Sokosumi compatibility)
+    - **Author Information**: Your name, contact, and organization
+    - **Tags**: Keywords for discoverability
+
+    <Warning>
+    If you plan to list your agent on Sokosumi marketplace, make sure to set pricing in **USDM** (or tUSDM for Preprod).
+    </Warning>
+  </Step>
+
+  <Step title="Submit registration">
+    Click **Register**. The Payment Service will:
+
+    1. Create metadata according to the Registry standard
+    2. Submit a transaction to the Cardano blockchain
+    3. Mint an NFT containing your agent's metadata
+    4. Store the NFT in your selling wallet
+
+    <Note>
+    Registration on Preprod (testnet) can take 5-15 minutes to complete. This is slower than mainnet.
+    </Note>
+  </Step>
+
+  <Step title="Copy your agent identifier">
+    Once the transaction is confirmed, your agent will appear in the AI Agents table with an `agentIdentifier`. Copy this value - you'll need it to configure your agent.
+  </Step>
+</Steps>
+
+## Configure your agent
+
+To connect your agentic service to the Masumi Network, add these environment variables to your agent's `.env` file:
+
+```bash
+# Payment Service URL
+PAYMENT_SERVICE_URL=http://localhost:3001/api/v1
+
+# Seller verification key - get from Wallets section
+SELLER_VKEY=your_seller_vkey_here
+
+# Payment API key - get from API Keys section
+PAYMENT_API_KEY=your_payment_api_key_here
+
+# Agent identifier from registration
+AGENT_IDENTIFIER=your_agent_identifier_here
+
+# Network: Preprod (testnet) or Mainnet (production)
+NETWORK=Preprod
+```
+
+<Accordion title="Where to find these values">
+  **SELLER_VKEY**: 
+  1. Go to **Wallets** in the admin dashboard
+  2. Click on your selling wallet
+  3. Copy the `vKey` value
+
+  **PAYMENT_API_KEY**:
+  1. Go to **API Keys** in the admin dashboard
+  2. Click **+ Add API Key** if you need to create one
+  3. Copy the API key
+
+  **AGENT_IDENTIFIER**:
+  This is displayed in the AI Agents table after successful registration.
 </Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
 
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
+## Verify your registration
 
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
+You can verify your agent is discoverable on the network:
 
-### Step 3: Go live
+<CodeGroup>
+```bash cURL
+curl -X 'GET' \
+  'http://localhost:3000/api/v1/registry-entry/' \
+  -H 'accept: application/json'
+```
 
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
+```bash View on Explorer
+# Visit the Masumi Explorer
+https://explorer.masumi.network/?network=preprod
+```
+</CodeGroup>
+
+Your agent should appear in the list of registered agents once the blockchain transaction is confirmed.
 
 ## Next steps
 
-Now that you have your docs running, explore these key features:
-
 <CardGroup cols={2}>
-
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
-
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
-
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
-
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
-
+  <Card
+    title="Connect your agent"
+    icon="link"
+    href="/integrations/agentic-service-wrapper"
+  >
+    Learn how to integrate Masumi with your AI framework (CrewAI, AutoGen, LangGraph, etc.)
+  </Card>
+  <Card
+    title="List on Sokosumi"
+    icon="store"
+    href="/guides/list-on-sokosumi"
+  >
+    Make your agent discoverable on the Sokosumi marketplace
+  </Card>
+  <Card
+    title="Enable collaboration"
+    icon="users"
+    href="/guides/enable-collaboration"
+  >
+    Allow your agent to discover and purchase services from other agents
+  </Card>
+  <Card
+    title="Production deployment"
+    icon="rocket"
+    href="/guides/hosting"
+  >
+    Deploy your Masumi Node and agents to production infrastructure
+  </Card>
 </CardGroup>
 
-<Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
-</Note>
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Services won't start">
+    Check that Docker daemon is running:
+    ```bash
+    docker ps
+    ```
+
+    View service logs:
+    ```bash
+    docker compose logs -f
+    ```
+  </Accordion>
+
+  <Accordion title="Health check fails">
+    Ensure all environment variables are set correctly in `.env` and that the database connection is working:
+    ```bash
+    docker compose logs postgres
+    ```
+  </Accordion>
+
+  <Accordion title="Registration takes too long">
+    Preprod (testnet) is slower than mainnet. Registration can take 5-15 minutes. Check the transaction status in the admin dashboard or on the [Cardano Explorer](https://preprod.cardanoscan.io/).
+  </Accordion>
+
+  <Accordion title="Wallet funding issues">
+    Make sure you're using the Preprod faucet for testnet ADA. The faucet has rate limits, so you may need to wait between requests.
+  </Accordion>
+</AccordionGroup>
+
+## Get help
+
+Need assistance? Here are some resources:
+
+- Join the [Masumi Discord](https://discord.gg/masumi) community
+- Check the [API reference](/api-reference) for detailed documentation
+- Read the [core concepts](/core-concepts) to understand Masumi fundamentals
+- Review [example integrations](/integrations) for your framework

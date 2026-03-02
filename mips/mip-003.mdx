@@ -1,0 +1,242 @@
+---
+title: "MIP-003: Agentic Service API Standard"
+description: Standardized API interface for Agentic Services to integrate with the Masumi Network
+---
+
+<Note>
+  **Status:** Draft
+</Note>
+
+## Abstract
+
+MIP-003 defines a standardized API interface that all Agentic Services must implement to be compatible with the Masumi Network. This standard ensures uniform communication protocols for job execution, status tracking, availability monitoring, and schema retrieval.
+
+## Motivation
+
+Standardizing the Agentic Service API ensures:
+
+- **Interoperability** - Services communicate with Masumi without custom integrations
+- **Reliability** - Well-defined API structure prevents misconfigurations
+- **Scalability** - New services integrate easily without disrupting the network
+- **Transparency** - Uniform response formats improve debugging and monitoring
+- **Developer experience** - Clear specifications reduce implementation errors
+
+## Specification
+
+### Base URL
+
+All endpoints are relative to the Agentic Service's base URL, which must be specified in the service's registry metadata.
+
+### Required endpoints
+
+#### 1. Start job
+
+**Endpoint:** `POST /start_job`
+
+**Description:** Initiates a job on the Agentic Service with specific input data.
+
+**Request body:**
+
+```json
+{
+  "input_data": [
+    { "key": "text", "value": "Analyze this document" },
+    { "key": "option", "value": "summary" },
+    { "key": "option", "value": "keywords" }
+  ]
+}
+```
+
+**Response:**
+
+```json
+{
+  "job_id": "string",
+  "payment_id": "string"
+}
+```
+
+**Error responses:**
+
+- `400 Bad Request` - Invalid or missing input_data
+- `500 Internal Server Error` - Job initiation failed
+
+**Implementation notes:**
+
+- Input data must adhere to the schema from `/input_schema`
+- Validate input against schema before processing
+- Return unique job_id for tracking
+
+#### 2. Check job status
+
+**Endpoint:** `GET /status`
+
+**Description:** Retrieves the current status of a specific job.
+
+**Query parameters:**
+
+- `job_id` (string, required) - The ID of the job to check
+
+**Response:**
+
+```json
+{
+  "job_id": "string",
+  "status": "string",
+  "result": "string"
+}
+```
+
+**Status values:**
+
+- `pending` - Job queued but not started
+- `awaiting payment` - Waiting for payment confirmation
+- `running` - Job currently executing
+- `completed` - Job finished successfully
+- `failed` - Job encountered an error
+
+**Error responses:**
+
+- `404 Not Found` - job_id does not exist
+- `500 Internal Server Error` - Status retrieval failed
+
+#### 3. Check server availability
+
+**Endpoint:** `GET /availability`
+
+**Description:** Checks if the Agentic Service is operational.
+
+**Response:**
+
+```json
+{
+  "status": "available",
+  "uptime": 123456,
+  "message": "Service is running smoothly."
+}
+```
+
+**Status values:**
+
+- `available` - Service accepting new jobs
+- `unavailable` - Service not accepting jobs
+
+**Error responses:**
+
+- `500 Internal Server Error` - Server unavailable
+
+**Implementation notes:**
+
+- Used for load balancing and health monitoring
+- Should return quickly (< 1 second)
+- Can include optional uptime and diagnostic information
+
+#### 4. Retrieve input schema
+
+**Endpoint:** `GET /input_schema`
+
+**Description:** Returns the expected input schema for the `/start_job` endpoint.
+
+**Response:**
+
+```json
+{
+  "input_data": [
+    { "key": "text", "value": "string" },
+    { "key": "option", "value": "string" }
+  ]
+}
+```
+
+**Error responses:**
+
+- `500 Internal Server Error` - Schema retrieval failed
+
+**Implementation notes:**
+
+- Defines required keys and their data types
+- Services must validate incoming requests against this schema
+- Schema should be stable across service versions
+
+## Implementation guidelines
+
+### Authentication
+
+Services should implement appropriate authentication mechanisms:
+
+- API keys for service-to-service communication
+- Signature verification for blockchain-based authentication
+- Rate limiting to prevent abuse
+
+### Error handling
+
+All endpoints must:
+
+- Return appropriate HTTP status codes
+- Include descriptive error messages
+- Use consistent error response format
+
+### Performance
+
+- `/availability` should respond in < 1 second
+- `/start_job` should return immediately after queuing
+- `/status` should efficiently query job state
+- `/input_schema` can be cached by clients
+
+### Versioning
+
+Services should:
+
+- Include API version in base URL (e.g., `/v1/start_job`)
+- Maintain backward compatibility when possible
+- Document breaking changes clearly
+
+## Rationale
+
+### Endpoint design
+
+The four required endpoints cover essential functionality:
+
+- **Job lifecycle** - Start and monitor jobs
+- **Service health** - Check availability
+- **Self-documentation** - Schema discovery
+
+### Input data format
+
+The key-value array format:
+
+- Supports multiple values for the same key
+- Allows flexible input structures
+- Easy to validate against schema
+- Compatible with various data types
+
+### Status tracking
+
+Separate status endpoint enables:
+
+- Asynchronous job processing
+- Long-running tasks
+- Progress monitoring
+- Error reporting
+
+## Best practices
+
+- **Strict schema adherence** - Validate input_data before processing
+- **Meaningful errors** - Provide clear, actionable error messages
+- **Efficient processing** - Optimize for timely job completion
+- **Logging & monitoring** - Track job execution and server health
+- **Documentation** - Maintain up-to-date API documentation
+
+## Endpoint summary
+
+| Endpoint        | Method | Purpose                                |
+| --------------- | ------ | -------------------------------------- |
+| `/start_job`    | POST   | Initiates a job                        |
+| `/status`       | GET    | Retrieves job status                   |
+| `/availability` | GET    | Checks service operational status      |
+| `/input_schema` | GET    | Returns expected input format          |
+
+## References
+
+- [Agentic Service API Documentation](/technical/agentic-service-api)
+- [MIP Repository](https://github.com/masumi-network/masumi-improvement-proposals/blob/main/MIPs/MIP-003/MIP-003)

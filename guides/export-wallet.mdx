@@ -1,0 +1,83 @@
+---
+title: Export your wallet into an external wallet
+description: This guide explains how to export your wallet using your mnemonic phrase and import it into external wallet applications.
+---
+
+Exporting your wallet requires two main steps:
+
+1. **Export your mnemonic phrase** from our platform
+2. **Import the mnemonic phrase** into your chosen external wallet
+
+<Warning>
+**Security notice:** Your mnemonic phrase provides complete access to your wallet. Keep it secure and never share it with anyone.
+</Warning>
+
+## Step 1: Export your mnemonic phrase
+
+You can export your mnemonic phrase using either method below:
+
+### Option A: Admin Panel export
+
+<Steps>
+
+<Step title="Access the Admin Panel">
+Log into your account in the **Admin Panel**.
+</Step>
+
+<Step title="Select wallet">
+Select a wallet you would like to export.
+</Step>
+
+<Step title="Export wallet">
+Click **Export Wallet**.
+</Step>
+
+<Step title="Copy mnemonic phrase">
+Copy the mnemonic phrase and store it securely.
+</Step>
+
+</Steps>
+
+### Option B: API export
+
+For developers and advanced users, retrieve your mnemonic programmatically by calling the Masumi Payment Service API:
+
+<Steps>
+
+<Step title="Get wallet ID">
+Get your wallet ID by calling `GET /payment-source` (you will need it in the second step).
+</Step>
+
+<Step title="Get the mnemonic">
+Get the mnemonic by calling `GET /wallet`.
+</Step>
+
+</Steps>
+
+## Step 2: Import to external wallet
+
+Once you have your mnemonic phrase:
+
+<Steps>
+
+<Step title="Open your external wallet application">
+Launch the external wallet app where you want to import your wallet.
+</Step>
+
+<Step title="Find import option">
+Look for **"Import Wallet"** or **"Restore Wallet"** option.
+</Step>
+
+<Step title="Select import from seed phrase">
+Select **"Import from seed phrase"** or **"Import from mnemonic"**.
+</Step>
+
+<Step title="Enter your mnemonic phrase">
+**Enter your mnemonic phrase** in the correct word order.
+</Step>
+
+<Step title="Complete the wallet setup">
+**Complete the wallet setup** following the app's instructions.
+</Step>
+
+</Steps>

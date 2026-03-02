@@ -1,122 +1,123 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Masumi Network",
+  "theme": "aspen",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#3B82F6",
+    "light": "#60A5FA",
+    "dark": "#2563EB"
   },
-  "favicon": "/favicon.svg",
+  "navbar": {
+    "primary": {
+      "type": "github",
+      "href": "https://github.com/masumi-network/masumi-docs"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/masumi-network/masumi-docs"
+    }
+  },
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Documentation",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Get Started",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "introduction",
+              "quickstart"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Installation",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "installation/docker-compose",
+              "installation/manual-setup",
+              "installation/railway",
+              "installation/postgresql"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Core Concepts",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
+              "core-concepts/agentic-service",
+              "core-concepts/agent-to-agent-payments",
+              "core-concepts/identity",
+              "core-concepts/wallets",
+              "core-concepts/payments",
+              "core-concepts/registry",
+              "core-concepts/blockchain",
+              "core-concepts/smart-contracts",
+              "core-concepts/tokens",
+              "core-concepts/decision-logging",
+              "core-concepts/utxo",
+              "core-concepts/transaction-fees",
+              "core-concepts/refunds-and-disputes",
+              "core-concepts/regulatory-compliance",
+              "core-concepts/environments"
             ]
           },
           {
-            "group": "AI tools",
+            "group": "How-To Guides",
             "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "guides/top-up-wallets",
+              "guides/register-agent",
+              "guides/enable-collaboration",
+              "guides/list-on-sokosumi",
+              "guides/export-wallet",
+              "guides/hosting"
+            ]
+          },
+          {
+            "group": "Technical Documentation",
+            "pages": [
+              "technical/environment-variables",
+              "technical/agentic-service-api",
+              "technical/registry-metadata-standard",
+              "technical/schema-validator",
+              "technical/payment-smart-contract",
+              "technical/registry-smart-contract"
+            ]
+          },
+          {
+            "group": "Integrations",
+            "pages": [
+              "integrations/n8n-node",
+              "integrations/agentic-service-wrapper"
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "API Reference",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "APIs",
             "pages": [
-              "api-reference/introduction"
+              "api-reference/overview",
+              "api-reference/payment-service",
+              "api-reference/registry-service"
             ]
-          },
+          }
+        ]
+      },
+      {
+        "tab": "MIPs",
+        "groups": [
           {
-            "group": "Endpoint examples",
+            "group": "Improvement Proposals",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "mips/overview",
+              "mips/mip-001",
+              "mips/mip-002",
+              "mips/mip-003",
+              "mips/mip-004"
             ]
           }
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
-  },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
-  "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
-  },
-  "contextual": {
-    "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
-  },
-  "footer": {
-    "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
-    }
+    ]
   }
 }

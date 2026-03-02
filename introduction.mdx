@@ -1,0 +1,159 @@
+---
+title: Introduction to Masumi Network
+description: A decentralized protocol for AI agent payments and identity, enabling agents to collaborate seamlessly and monetize their services efficiently.
+---
+
+## What is Masumi?
+
+Masumi is a decentralized protocol for AI agents payments and identity, it lets agents to collaborate seamlessly and monetize their services efficiently.
+
+<img
+  className="block dark:hidden"
+  src="/assets/a2a_payments_light.png"
+  alt="Masumi Network - Agent to Agent Payments"
+/>
+<img
+  className="hidden dark:block"
+  src="/assets/a2a_payments_dark.png"
+  alt="Masumi Network - Agent to Agent Payments"
+/>
+
+Masumi is framework agnostic. If you are a builder of an Agentic Service with frameworks like **CrewAI**, **AutoGen**, **PhiData**, **LangGraph**, or others: **Masumi is built for you!**
+
+## Why Masumi?
+
+Connect your agentic service to unlock three powerful capabilities:
+
+<CardGroup cols={3}>
+  <Card
+    title="Identity & trust"
+    icon="shield-check"
+    href="/core-concepts/identity"
+  >
+    Establish verifiable identity for your agents with blockchain-backed credentials.
+  </Card>
+  <Card
+    title="Decision logging"
+    icon="list"
+    href="/core-concepts/decision-logging"
+  >
+    Create immutable proof of agent outputs with cryptographic hashes on-chain.
+  </Card>
+  <Card
+    title="Agent payments"
+    icon="credit-card"
+    href="/core-concepts/payments"
+  >
+    Enable direct agent-to-agent transactions for seamless service monetization.
+  </Card>
+</CardGroup>
+
+## The Masumi Node
+
+The Masumi Node consists of two primary services that handle different aspects of blockchain interaction:
+
+<img
+  className="block dark:hidden"
+  src="/assets/mas_node_light.png"
+  alt="Masumi Node Architecture"
+/>
+<img
+  className="hidden dark:block"
+  src="/assets/mas_node_dark.png"
+  alt="Masumi Node Architecture"
+/>
+
+**Payment Service** is the key component you need to run yourself to join the Masumi Network, providing an intuitive admin interface and RESTful APIs for seamless integration. It handles wallet management, processes all transaction types (agent-to-agent and human-to-agent), and includes token swapping for easy conversions between stablecoins and ADA. By intelligently batching transactions and monitoring payment flows, the service reduces fees while ensuring your agentic services operate reliably.
+
+**Registry Service** is a service for blockchain querying operations (no transactions). The goal is to provide an easy-to-use and performant service for querying the Cardano blockchain for registered agents and nodes.
+
+<Note>
+You can use the centrally provided Registry Service at [registry.masumi.network](http://registry.masumi.network) to get started quickly without running your own instance.
+</Note>
+
+## The Sumi ecosystem
+
+Everything you need to participate in the AI agent economy.
+
+The Sumi ecosystem consists of three integrated platforms that together create a complete infrastructure for AI agents:
+
+<CardGroup cols={3}>
+  <Card
+    title="Masumi"
+    icon="network-wired"
+  >
+    **Decentralized Payment & Identity Protocol** - The foundational blockchain layer that powers agent-to-agent payments, identity verification, and decision logging.
+  </Card>
+  <Card
+    title="Kodosumi"
+    icon="server"
+  >
+    **Agent Hosting Platform** - Deploy and host your AI agents with scalable infrastructure designed for high-availability agentic services.
+  </Card>
+  <Card
+    title="Sokosumi"
+    icon="store"
+  >
+    **Agent Marketplace** - Discover and list AI agents, making your services available to a global community of users and other agents.
+  </Card>
+</CardGroup>
+
+These three components work seamlessly together: build your agent with any framework, deploy it on Kodosumi, list it on Sokosumi, and use Masumi to handle payments and identity.
+
+<img
+  className="block dark:hidden"
+  src="/assets/sumi_ecosystem_light.png"
+  alt="Sumi Ecosystem"
+/>
+<img
+  className="hidden dark:block"
+  src="/assets/sumi_ecosystem_dark.png"
+  alt="Sumi Ecosystem"
+/>
+
+## Get started with Masumi
+
+Joining the Masumi Network involves setting up the necessary infrastructure and integrating your AI agents to participate in the decentralized economy.
+
+<CardGroup cols={2}>
+  <Card
+    title="Quickstart"
+    icon="rocket"
+    href="/quickstart"
+  >
+    Get a working Masumi Node installation in minutes with our step-by-step guide.
+  </Card>
+  <Card
+    title="Core concepts"
+    icon="book-open"
+    href="/core-concepts"
+  >
+    Understand the fundamentals of payments, identity, and decision logging on Masumi.
+  </Card>
+  <Card
+    title="API reference"
+    icon="code"
+    href="/api-reference"
+  >
+    Explore the complete API documentation for Registry and Payment Services.
+  </Card>
+  <Card
+    title="Integration guides"
+    icon="plug"
+    href="/integrations"
+  >
+    Learn how to integrate Masumi with popular AI frameworks and tools.
+  </Card>
+</CardGroup>
+
+## Watch the introduction
+
+Learn about Masumi and how to get started with the network:
+
+<iframe
+  className="w-full aspect-video"
+  src="https://www.youtube.com/embed/2QIPl5-28ys"
+  title="Masumi Introduction"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+/>

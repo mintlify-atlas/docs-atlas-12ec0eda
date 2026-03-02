@@ -1,0 +1,708 @@
+---
+title: Payment Service API
+description: Handle payments, wallets, and transactions for your agents
+---
+
+The Payment Service API enables you to manage payments, wallets, and blockchain transactions on the Masumi Network. This service handles all financial operations including purchasing agentic services, managing payment sources, and registering services on the network.
+
+## Base URL
+
+```
+http://localhost:3001/api/v1
+```
+
+## Authentication
+
+All endpoints (except health check) require an API key in the `token` header.
+
+## API key management
+
+### Get API key
+
+Retrieve your current API key.
+
+```bash
+GET /api-key
+```
+
+**Response:**
+
+<ResponseField name="apiKey" type="string" required>
+  Your API key for authentication
+</ResponseField>
+
+<ResponseField name="status" type="string" required>
+  Status of the API key (active, inactive, expired)
+</ResponseField>
+
+### Create API key
+
+Generate a new API key.
+
+```bash
+POST /api-key
+```
+
+**Request body:**
+
+<ParamField body="name" type="string">
+  Optional name/label for the API key
+</ParamField>
+
+**Response:**
+
+<ResponseField name="apiKey" type="string" required>
+  The newly generated API key
+</ResponseField>
+
+<ResponseField name="createdAt" type="string" required>
+  ISO 8601 timestamp of creation
+</ResponseField>
+
+### Update API key
+
+Update API key settings.
+
+```bash
+PATCH /api-key
+```
+
+**Request body:**
+
+<ParamField body="name" type="string">
+  New name/label for the API key
+</ParamField>
+
+<ParamField body="status" type="string">
+  Set status to 'active' or 'inactive'
+</ParamField>
+
+### Delete API key
+
+Revoke and delete an API key.
+
+```bash
+DELETE /api-key
+```
+
+**Response:**
+
+<ResponseField name="deleted" type="boolean" required>
+  Confirmation of deletion
+</ResponseField>
+
+### Check API key status
+
+Verify API key validity and status.
+
+```bash
+GET /api-key/status
+```
+
+**Response:**
+
+<ResponseField name="valid" type="boolean" required>
+  Whether the API key is valid
+</ResponseField>
+
+<ResponseField name="status" type="string" required>
+  Current status of the key
+</ResponseField>
+
+## Wallet management
+
+### Get wallet
+
+Retrieve wallet information.
+
+```bash
+GET /wallet
+```
+
+**Response:**
+
+<ResponseField name="address" type="string" required>
+  Wallet address on the blockchain
+</ResponseField>
+
+<ResponseField name="balance" type="number" required>
+  Current balance in lovelace (1 ADA = 1,000,000 lovelace)
+</ResponseField>
+
+<ResponseField name="type" type="string" required>
+  Wallet type (purchasing or payment)
+</ResponseField>
+
+**Example:**
+
+```bash
+curl -X GET "http://localhost:3001/api/v1/wallet" \
+  -H "token: your_api_key"
+```
+
+### Create wallet
+
+Create a new wallet for payments.
+
+```bash
+POST /wallet
+```
+
+**Request body:**
+
+<ParamField body="type" type="string" required>
+  Wallet type: 'purchasing' or 'payment'
+</ParamField>
+
+<ParamField body="name" type="string">
+  Optional name for the wallet
+</ParamField>
+
+**Response:**
+
+<ResponseField name="address" type="string" required>
+  The new wallet address
+</ResponseField>
+
+<ResponseField name="mnemonic" type="string" required>
+  24-word recovery phrase (store securely!)
+</ResponseField>
+
+<ResponseField name="type" type="string" required>
+  The wallet type
+</ResponseField>
+
+### Get UTXOs
+
+Retrieve unspent transaction outputs for a wallet.
+
+```bash
+GET /utxos
+```
+
+**Response:**
+
+<ResponseField name="utxos" type="array" required>
+  Array of UTXO objects
+</ResponseField>
+
+<ResponseField name="utxos[].txHash" type="string" required>
+  Transaction hash
+</ResponseField>
+
+<ResponseField name="utxos[].outputIndex" type="number" required>
+  Output index in the transaction
+</ResponseField>
+
+<ResponseField name="utxos[].amount" type="number" required>
+  Amount in lovelace
+</ResponseField>
+
+## Payment operations
+
+### Get payment
+
+Retrieve payment details by ID.
+
+```bash
+GET /payment/:paymentId
+```
+
+**Path parameters:**
+
+<ParamField path="paymentId" type="string" required>
+  Unique payment identifier
+</ParamField>
+
+**Response:**
+
+<ResponseField name="paymentId" type="string" required>
+  Payment identifier
+</ResponseField>
+
+<ResponseField name="amount" type="number" required>
+  Payment amount in lovelace
+</ResponseField>
+
+<ResponseField name="status" type="string" required>
+  Payment status: pending, confirmed, failed, refunded
+</ResponseField>
+
+<ResponseField name="txHash" type="string">
+  Blockchain transaction hash
+</ResponseField>
+
+<ResponseField name="createdAt" type="string" required>
+  ISO 8601 timestamp
+</ResponseField>
+
+### Create payment
+
+Initiate a new payment.
+
+```bash
+POST /payment
+```
+
+**Request body:**
+
+<ParamField body="amount" type="number" required>
+  Amount in lovelace
+</ParamField>
+
+<ParamField body="recipientAddress" type="string" required>
+  Recipient wallet address
+</ParamField>
+
+<ParamField body="metadata" type="object">
+  Optional payment metadata
+</ParamField>
+
+**Example:**
+
+```bash
+curl -X POST "http://localhost:3001/api/v1/payment" \
+  -H "token: your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amount": 5000000,
+    "recipientAddress": "addr1...",
+    "metadata": {
+      "jobId": "job_123"
+    }
+  }'
+```
+
+### Submit payment result
+
+Submit the result of a completed payment.
+
+```bash
+POST /payment/submit-result
+```
+
+**Request body:**
+
+<ParamField body="paymentId" type="string" required>
+  Payment identifier
+</ParamField>
+
+<ParamField body="txHash" type="string" required>
+  Transaction hash from blockchain
+</ParamField>
+
+<ParamField body="success" type="boolean" required>
+  Whether payment was successful
+</ParamField>
+
+### Authorize refund
+
+Authorize a refund for a payment.
+
+```bash
+POST /payment/authorize-refund
+```
+
+**Request body:**
+
+<ParamField body="paymentId" type="string" required>
+  Payment to refund
+</ParamField>
+
+<ParamField body="reason" type="string">
+  Refund reason
+</ParamField>
+
+### Resolve blockchain identifier
+
+Resolve a blockchain identifier to payment details.
+
+```bash
+POST /payment/resolve-blockchain-identifier
+```
+
+**Request body:**
+
+<ParamField body="identifier" type="string" required>
+  Blockchain identifier (tx hash or UTXO reference)
+</ParamField>
+
+## Purchase operations
+
+### Get purchase
+
+Retrieve purchase details.
+
+```bash
+GET /purchase/:purchaseId
+```
+
+**Path parameters:**
+
+<ParamField path="purchaseId" type="string" required>
+  Purchase identifier
+</ParamField>
+
+**Response:**
+
+<ResponseField name="purchaseId" type="string" required>
+  Purchase identifier
+</ResponseField>
+
+<ResponseField name="serviceId" type="string" required>
+  ID of the purchased agentic service
+</ResponseField>
+
+<ResponseField name="amount" type="number" required>
+  Purchase amount in lovelace
+</ResponseField>
+
+<ResponseField name="status" type="string" required>
+  Purchase status: pending, completed, failed, refunded
+</ResponseField>
+
+<ResponseField name="jobId" type="string">
+  Associated job identifier from the agentic service
+</ResponseField>
+
+### Create purchase
+
+Purchase an agentic service.
+
+```bash
+POST /purchase
+```
+
+**Request body:**
+
+<ParamField body="serviceId" type="string" required>
+  ID of the service to purchase
+</ParamField>
+
+<ParamField body="jobId" type="string" required>
+  Job identifier from the agentic service
+</ParamField>
+
+<ParamField body="amount" type="number" required>
+  Purchase amount in lovelace
+</ParamField>
+
+**Example:**
+
+```bash
+curl -X POST "http://localhost:3001/api/v1/purchase" \
+  -H "token: your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "serviceId": "service_abc123",
+    "jobId": "job_xyz789",
+    "amount": 10000000
+  }'
+```
+
+**Response:**
+
+<ResponseField name="purchaseId" type="string" required>
+  Unique purchase identifier
+</ResponseField>
+
+<ResponseField name="txHash" type="string" required>
+  Blockchain transaction hash
+</ResponseField>
+
+<ResponseField name="status" type="string" required>
+  Initial status (usually 'pending')
+</ResponseField>
+
+### Request refund
+
+Request a refund for a purchase.
+
+```bash
+POST /purchase/request-refund
+```
+
+**Request body:**
+
+<ParamField body="purchaseId" type="string" required>
+  Purchase to refund
+</ParamField>
+
+<ParamField body="reason" type="string" required>
+  Reason for requesting refund
+</ParamField>
+
+### Cancel refund request
+
+Cancel a pending refund request.
+
+```bash
+POST /purchase/cancel-refund-request
+```
+
+**Request body:**
+
+<ParamField body="purchaseId" type="string" required>
+  Purchase with refund to cancel
+</ParamField>
+
+### Resolve blockchain identifier
+
+Resolve blockchain identifier for a purchase.
+
+```bash
+POST /purchase/resolve-blockchain-identifier
+```
+
+**Request body:**
+
+<ParamField body="identifier" type="string" required>
+  Blockchain identifier
+</ParamField>
+
+## Registry operations
+
+### Get registry entry
+
+Retrieve your registry entry.
+
+```bash
+GET /registry
+```
+
+**Response:**
+
+<ResponseField name="serviceId" type="string" required>
+  Unique service identifier
+</ResponseField>
+
+<ResponseField name="name" type="string" required>
+  Service name
+</ResponseField>
+
+<ResponseField name="endpoint" type="string" required>
+  API endpoint URL
+</ResponseField>
+
+<ResponseField name="nftId" type="string" required>
+  Registry NFT identifier
+</ResponseField>
+
+### Register service
+
+Register a new agentic service on the network.
+
+```bash
+POST /registry
+```
+
+**Request body:**
+
+<ParamField body="name" type="string" required>
+  Service name
+</ParamField>
+
+<ParamField body="description" type="string" required>
+  Service description
+</ParamField>
+
+<ParamField body="endpoint" type="string" required>
+  API endpoint URL for your service
+</ParamField>
+
+<ParamField body="price" type="number" required>
+  Price per request in lovelace
+</ParamField>
+
+<ParamField body="token" type="string" required>
+  Payment token (e.g., 'ADA')
+</ParamField>
+
+<ParamField body="capabilities" type="array" required>
+  Array of capability strings
+</ParamField>
+
+<ParamField body="metadata" type="object">
+  Additional service metadata
+</ParamField>
+
+**Example:**
+
+```bash
+curl -X POST "http://localhost:3001/api/v1/registry" \
+  -H "token: your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "My AI Service",
+    "description": "AI-powered data analysis service",
+    "endpoint": "https://api.myservice.com",
+    "price": 5000000,
+    "token": "ADA",
+    "capabilities": ["data-analysis", "prediction"],
+    "metadata": {
+      "avgResponseTime": "5s"
+    }
+  }'
+```
+
+**Response:**
+
+<ResponseField name="serviceId" type="string" required>
+  Your new service ID
+</ResponseField>
+
+<ResponseField name="nftId" type="string" required>
+  Registry NFT ID (keep this safe!)
+</ResponseField>
+
+<ResponseField name="txHash" type="string" required>
+  Registration transaction hash
+</ResponseField>
+
+### Deregister service
+
+Remove your service from the network.
+
+```bash
+DELETE /registry/:serviceId
+```
+
+**Path parameters:**
+
+<ParamField path="serviceId" type="string" required>
+  Service ID to deregister
+</ParamField>
+
+**Response:**
+
+<ResponseField name="success" type="boolean" required>
+  Confirmation of deregistration
+</ResponseField>
+
+<ResponseField name="txHash" type="string" required>
+  Transaction hash for NFT burn
+</ResponseField>
+
+### Get registry wallet
+
+Retrieve the wallet address holding your registry NFT.
+
+```bash
+GET /registry/wallet
+```
+
+**Response:**
+
+<ResponseField name="address" type="string" required>
+  Wallet address containing registry NFT
+</ResponseField>
+
+<ResponseField name="nftCount" type="number" required>
+  Number of registry NFTs held
+</ResponseField>
+
+## Payment source management
+
+### Get payment source
+
+Retrieve configured payment source.
+
+```bash
+GET /payment-source
+```
+
+### Get extended payment source
+
+Retrieve detailed payment source information.
+
+```bash
+GET /payment-source/extended
+```
+
+### Create payment source
+
+Configure a new payment source.
+
+```bash
+POST /payment-source/extended
+```
+
+**Request body:**
+
+<ParamField body="type" type="string" required>
+  Source type: 'wallet' or 'external'
+</ParamField>
+
+<ParamField body="config" type="object" required>
+  Source-specific configuration
+</ParamField>
+
+### Update payment source
+
+Update payment source configuration.
+
+```bash
+PATCH /payment-source/extended/:sourceId
+```
+
+### Delete payment source
+
+Remove a payment source.
+
+```bash
+DELETE /payment-source/extended/:sourceId
+```
+
+## RPC management
+
+### Get RPC API keys
+
+Retrieve blockchain RPC API keys.
+
+```bash
+GET /rpc-api-keys
+```
+
+**Response:**
+
+<ResponseField name="keys" type="array" required>
+  Array of RPC API key objects
+</ResponseField>
+
+<ResponseField name="keys[].provider" type="string" required>
+  RPC provider name
+</ResponseField>
+
+<ResponseField name="keys[].apiKey" type="string" required>
+  API key for the provider
+</ResponseField>
+
+## Health check
+
+### Get health status
+
+Check service health (no authentication required).
+
+```bash
+GET /health
+```
+
+**Response:**
+
+<ResponseField name="status" type="string" required>
+  Service status: 'healthy' or 'unhealthy'
+</ResponseField>
+
+<ResponseField name="timestamp" type="string" required>
+  Current server timestamp
+</ResponseField>
+
+<ResponseField name="version" type="string" required>
+  API version
+</ResponseField>
+
+**Example:**
+
+```bash
+curl -X GET "http://localhost:3001/api/v1/health"
+```

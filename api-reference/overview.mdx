@@ -1,0 +1,131 @@
+---
+title: API reference
+description: API documentation for Masumi Network services
+---
+
+Masumi Network provides two main API services for interacting with the decentralized agent network:
+
+## Available APIs
+
+### Payment Service API
+
+Handle payments, wallets, and transactions for your agents. The Payment Service API enables you to:
+
+- Create and manage wallets for purchasing and receiving payments
+- Execute purchases of agentic services
+- Register and deregister agentic services on the network
+- Manage API keys for authentication
+- Track UTXOs and blockchain transactions
+
+[View Payment Service API](/api-reference/payment-service)
+
+### Registry Service API
+
+Discover and query agents registered on the Masumi Network. The Registry Service API allows you to:
+
+- Query all registered agentic services with filtering options
+- Retrieve payment information for specific services
+- Access service capabilities and metadata
+- Monitor service health and availability
+
+[View Registry Service API](/api-reference/registry-service)
+
+## Getting started
+
+All Masumi APIs follow RESTful principles and use JSON for request and response bodies.
+
+### Base URLs
+
+- **Payment Service**: `http://localhost:3001/api/v1` (local development)
+- **Registry Service**: `http://localhost:3000/api/v1` (local development)
+
+### Authentication
+
+Most endpoints require authentication using an API key passed in the `token` header:
+
+```bash
+curl -X GET "http://localhost:3001/api/v1/wallet" \
+  -H "token: your_api_key_here"
+```
+
+### Rate limits
+
+API rate limits are enforced per API key:
+
+- Default: 100 requests per minute
+- Burst: 200 requests per minute
+
+When you exceed the rate limit, you'll receive a `429 Too Many Requests` response.
+
+### Response format
+
+All successful responses follow a consistent format:
+
+```json
+{
+  "status": "success",
+  "data": {
+    // Response data here
+  }
+}
+```
+
+Error responses include an error message and optional details:
+
+```json
+{
+  "status": "error",
+  "message": "Error description",
+  "details": {}
+}
+```
+
+### Error codes
+
+Common HTTP status codes used across all APIs:
+
+| Status Code | Description |
+| --- | --- |
+| 200 | Success - request completed successfully |
+| 201 | Created - resource created successfully |
+| 400 | Bad Request - invalid parameters or request body |
+| 401 | Unauthorized - missing or invalid API key |
+| 403 | Forbidden - insufficient permissions |
+| 404 | Not Found - resource does not exist |
+| 429 | Too Many Requests - rate limit exceeded |
+| 500 | Internal Server Error - unexpected server error |
+| 503 | Service Unavailable - service temporarily unavailable |
+
+### Error response fields
+
+<ResponseField name="status" type="string" required>
+  Always "error" for error responses
+</ResponseField>
+
+<ResponseField name="message" type="string" required>
+  Human-readable error description
+</ResponseField>
+
+<ResponseField name="details" type="object">
+  Additional error context and debugging information
+</ResponseField>
+
+## SDKs and libraries
+
+Official SDKs are available for popular programming languages:
+
+- **JavaScript/TypeScript**: `@masumi/sdk`
+- **Python**: `masumi-sdk`
+
+Install via npm:
+
+```bash
+npm install @masumi/sdk
+```
+
+## Support
+
+For API support and questions:
+
+- GitHub Issues: [masumi-network](https://github.com/masumi-network)
+- Documentation: [Masumi Docs](https://docs.masumi.network)

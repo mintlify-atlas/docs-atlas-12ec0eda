@@ -1,0 +1,186 @@
+---
+title: PostgreSQL installation
+description: Install and configure PostgreSQL database for Masumi services
+---
+
+If you don't have a PostgreSQL database available, this guide will help you set it up on various systems.
+
+## Installation on macOS
+
+<Steps>
+
+### Install and start PostgreSQL
+
+Using Homebrew, install PostgreSQL 15:
+
+```bash
+brew install postgresql@15
+brew services start postgresql@15
+```
+
+### Add PostgreSQL to your PATH
+
+Add PostgreSQL binaries to your shell path:
+
+```bash
+echo 'export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"' >> ~/.bash_profile
+source ~/.bash_profile
+```
+
+<Note>
+If you're using zsh (default on modern macOS), replace `~/.bash_profile` with `~/.zshrc`.
+</Note>
+
+### Create a Masumi database
+
+Connect to PostgreSQL and create the database:
+
+```bash
+psql postgres
+create database masumi_payment;
+\q
+```
+
+</Steps>
+
+## Installation on Ubuntu/Debian
+
+<Steps>
+
+### Install PostgreSQL
+
+```bash
+sudo apt update
+sudo apt install -y postgresql postgresql-contrib
+```
+
+### Start and enable PostgreSQL
+
+```bash
+sudo systemctl start postgresql
+sudo systemctl enable postgresql
+```
+
+### Create database and user
+
+Switch to the postgres user and create the database:
+
+```bash
+sudo -u postgres psql
+```
+
+Inside the PostgreSQL prompt:
+
+```sql
+CREATE DATABASE masumi_payment;
+CREATE USER masumi_user WITH ENCRYPTED PASSWORD 'your_secure_password';
+GRANT ALL PRIVILEGES ON DATABASE masumi_payment TO masumi_user;
+\q
+```
+
+</Steps>
+
+## Installation on Windows
+
+<Steps>
+
+### Download PostgreSQL
+
+Download the PostgreSQL 15 installer from the [PostgreSQL download page](https://www.postgresql.org/download/windows/).
+
+### Run the installer
+
+1. Run the downloaded installer
+2. Follow the installation wizard
+3. Set a password for the postgres user
+4. Keep the default port (5432)
+5. Complete the installation
+
+### Create a database
+
+Open the SQL Shell (psql) from the Start menu:
+
+```sql
+create database masumi_payment;
+\q
+```
+
+</Steps>
+
+## Installation with Docker
+
+For a containerized PostgreSQL instance:
+
+```bash
+docker run --name masumi-postgres \
+  -e POSTGRES_PASSWORD=your_secure_password \
+  -e POSTGRES_DB=masumi_payment \
+  -p 5432:5432 \
+  -d postgres:15
+```
+
+Verify the container is running:
+
+```bash
+docker ps | grep masumi-postgres
+```
+
+## Configure the DATABASE_URL
+
+<Warning>
+Make sure to configure the **DATABASE_URL** variable in the **.env** file according to your setup.
+</Warning>
+
+The DATABASE_URL should match your database configuration:
+
+### For local installations
+
+```ini
+DATABASE_URL="postgresql://<USERNAME>@localhost:5432/masumi_payment?schema=public"
+```
+
+Replace `<USERNAME>` with your system username (or `postgres` for default installations).
+
+### For custom user/password
+
+```ini
+DATABASE_URL="postgresql://masumi_user:your_secure_password@localhost:5432/masumi_payment?schema=public"
+```
+
+### For Docker installations
+
+```ini
+DATABASE_URL="postgresql://postgres:your_secure_password@localhost:5432/masumi_payment?schema=public"
+```
+
+### For remote databases
+
+```ini
+DATABASE_URL="postgresql://username:password@hostname:5432/masumi_payment?schema=public"
+```
+
+## Verify installation
+
+Test the PostgreSQL connection:
+
+```bash
+psql -U <username> -d masumi_payment
+```
+
+If successful, you'll see the PostgreSQL prompt:
+
+```
+masumi_payment=#
+```
+
+Type `\q` to exit.
+
+## Additional resources
+
+For other operating systems and detailed configuration options, see the [PostgreSQL download page](https://www.postgresql.org/download/).
+
+## Next steps
+
+- Return to [Manual Setup](/installation/manual-setup) to continue installation
+- Learn about [Environment Variables](/technical/environment-variables)
+- Explore [Docker Compose Installation](/installation/docker-compose) for automated setup

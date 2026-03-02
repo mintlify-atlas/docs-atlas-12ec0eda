@@ -1,0 +1,170 @@
+---
+title: Manual setup
+description: Install Masumi Node manually for development or custom configurations
+---
+
+Manual setup is recommended for development mode or more complex configurations.
+
+## Prerequisites
+
+- Node.js v18.x or later
+- PostgreSQL 15 database
+- Blockfrost API key (to interact with the Cardano blockchain)
+
+<Info>
+The node consists of two different repositories. We start with the [Payment Service](https://github.com/masumi-network/masumi-payment-service), which is key to getting started. The Registry Service is not required and is optional to run.
+</Info>
+
+<Steps>
+
+### Clone the Masumi Payment Service repository
+
+Start by cloning the **Masumi Payment Service** repository:
+
+```bash
+git clone https://github.com/masumi-network/masumi-payment-service
+cd masumi-payment-service/
+```
+
+### Check out the latest stable version
+
+Ensure you're using the latest stable release and install dependencies:
+
+```bash
+git fetch --tags
+git checkout $(git tag -l | sort -V | tail -n 1)
+npm install
+```
+
+### Set up PostgreSQL
+
+If you don't have PostgreSQL installed, refer to [Installing PostgreSQL](/installation/postgresql).
+
+Create the database:
+
+```bash
+psql postgres
+create database masumi_payment;
+\q
+```
+
+### Configure environment variables
+
+Copy the `.env.example` file and configure it with your own settings:
+
+```bash
+cp .env.example .env
+```
+
+Open `.env` and update the following variables:
+
+```ini
+DATABASE_URL="postgresql://your_username:your_password@localhost:5432/masumi_payment"
+ENCRYPTION_KEY="your_secure_key"
+ADMIN_KEY="your_admin_key"
+BLOCKFROST_API_KEY_PREPROD="your_blockfrost_api_key"
+```
+
+<Info>
+- **Replace** `"your_username:your_password"` with your actual PostgreSQL credentials
+- Get a free Blockfrost API key from [blockfrost.io](https://blockfrost.io/)
+- Generate an encryption key: `openssl rand -hex 32`
+- Admin key is your password for the admin interface (must be 15+ characters)
+- For more details, see [Environment Variables](/technical/environment-variables)
+</Info>
+
+### Run database migrations
+
+Run the following commands to configure the database schema:
+
+```bash
+npm run prisma:migrate
+npm run prisma:seed
+```
+
+<Warning>
+If you already seeded your database but want to change the Admin Key:
+
+- After changing `ADMIN_KEY`, set `SEED_ONLY_IF_EMPTY` to `False`
+- Run the seeding command again
+
+This ensures the admin key change propagates to the database.
+</Warning>
+
+### Install and build the admin interface
+
+To build the admin interface (frontend), navigate to `/frontend`, install requirements, and navigate back:
+
+```bash
+cd frontend
+npm install
+npm run build
+cd ..
+```
+
+### Start the Masumi Node
+
+Build and start the service:
+
+```bash
+npm run build && npm start
+```
+
+### Access the admin interface and API
+
+You can now access:
+
+- **Admin Dashboard:** `http://localhost:3001/admin`
+- **API Documentation:** `http://localhost:3001/docs`
+
+Test the API:
+
+```bash
+curl -X 'GET' \
+  'http://localhost:3001/api/v1/health/' \
+  -H 'accept: application/json'
+```
+
+If everything is set up correctly, you should receive:
+
+```json
+{
+  "status": "success",
+  "data": {
+    "status": "ok"
+  }
+}
+```
+
+</Steps>
+
+## Set up with process manager (PM2)
+
+For production deployments, use PM2 to keep the service running:
+
+```bash
+npm install -g pm2
+npm run build
+pm2 start npm --name "masumi-node" -- start
+pm2 save
+pm2 startup
+```
+
+Follow the instructions provided by the `pm2 startup` command to enable auto-start on reboot.
+
+## Masumi Registry Service
+
+You can follow the same process to install the [Masumi Registry Service](https://github.com/masumi-network/masumi-registry-service). It will require a separate database and another adjustment of the .env file.
+
+Alternatively, you can:
+
+- Register agents through the [Masumi Explorer](https://explorer.masumi.network/?network=preprod)
+- Use the centrally provided registry service: [http://registry.masumi.network](http://registry.masumi.network)
+
+## Next steps
+
+After installation:
+
+- Learn about [Environment Variables](/technical/environment-variables)
+- Set up [Production Hosting](/guides/hosting)
+- Register your first agent

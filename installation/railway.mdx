@@ -1,0 +1,176 @@
+---
+title: Railway deployment
+description: Deploy Masumi Node on Railway with one-click templates and automatic provisioning
+---
+
+Railway provides the easiest way to host your Masumi Node with minimal configuration. Railway templates handle most of the setup automatically.
+
+## Overview
+
+Railway deployment offers:
+
+- One-click deployment via templates
+- Automatic database provisioning
+- Built-in environment variable management
+- Easy scaling and monitoring
+- Free trial available
+
+<Info>
+While Railway is excellent for Masumi Node, you should host your agents separately on another platform (Railway, Digital Ocean, AWS, etc.) to maintain proper separation and avoid resource conflicts.
+</Info>
+
+## Agentic service wrapper integrations
+
+The Agentic Service Wrapper provides minimal wrappers that create Masumi-compliant API services, allowing you to easily integrate your AI agents with the Masumi payment system.
+
+### Available integrations
+
+Each integration provides complete deployment guides, Railway templates, example configurations, and testing tools:
+
+- **N8N Integration:** Implement a paywall workflow using n8n's visual workflow builder
+- **LangChain Integration:** LangGraph ReAct agent patterns with iterative text summarization
+- **CrewAI Integration:** Multi-agent workflows with CrewAI framework integration
+
+<Note>
+Each integration is designed to be prepended to your existing AI logic, handling the payment layer transparently while preserving your core functionality.
+</Note>
+
+For detailed Railway deployment instructions with these integrations, refer to the [Agentic Service Wrapper](/integrations/agentic-service-wrapper) documentation.
+
+## Deployment steps
+
+<Steps>
+
+### Choose your deployment template
+
+Select the appropriate Railway template based on your needs:
+
+- **Masumi Payment Service:** Core payment infrastructure
+- **Masumi Registry Service:** Optional service registration
+- **Agentic Service Wrapper:** Pre-configured AI agent templates
+
+### Configure environment variables
+
+Railway will prompt you to configure the following environment variables:
+
+```ini
+# Blockfrost API
+BLOCKFROST_API_KEY_PREPROD="your_blockfrost_api_key"
+
+# Security
+ENCRYPTION_KEY="your_secure_encryption_key_32_chars_min"
+ADMIN_KEY="your_admin_password_15_chars_min"
+
+# Network
+NETWORK=Preprod
+
+# Server Configuration
+PORT=3001
+HOST=0.0.0.0
+```
+
+<Info>
+- Generate a secure encryption key: `openssl rand -hex 32`
+- Get your Blockfrost API key from [blockfrost.io](https://blockfrost.io/)
+- The ADMIN_KEY must be at least 15 characters long
+- For complete variable reference, see [Environment Variables](/technical/environment-variables)
+</Info>
+
+### Deploy the service
+
+Click the deploy button in the Railway template. Railway will:
+
+1. Provision a PostgreSQL database automatically
+2. Set up the DATABASE_URL environment variable
+3. Run database migrations
+4. Start the Masumi Node service
+
+### Verify deployment
+
+Once deployment is complete:
+
+1. Access the Railway-provided URL
+2. Navigate to `/admin` for the admin dashboard
+3. Navigate to `/docs` for API documentation
+4. Test the health endpoint: `https://your-app.railway.app/api/v1/health/`
+
+Expected response:
+
+```json
+{
+  "status": "success",
+  "data": {
+    "status": "ok"
+  }
+}
+```
+
+</Steps>
+
+## Database management
+
+Railway automatically provisions and manages your PostgreSQL database:
+
+- **Backups:** Configured automatically
+- **Scaling:** Adjust database resources in Railway dashboard
+- **Connection:** DATABASE_URL is set automatically
+
+## Monitoring and logs
+
+Access logs and monitoring through the Railway dashboard:
+
+- **View logs:** Real-time application logs
+- **Metrics:** CPU, memory, and network usage
+- **Deployments:** Track deployment history and rollback if needed
+
+## Updating your deployment
+
+To update your Railway deployment:
+
+1. Push changes to your connected Git repository
+2. Railway automatically triggers a new deployment
+3. Zero-downtime deployment with automatic rollback on failure
+
+Or manually trigger a redeploy from the Railway dashboard.
+
+## Recommended architecture
+
+<Warning>
+Masumi Node and agents must be hosted on separate servers to avoid resource conflicts, performance issues, and service interruptions.
+</Warning>
+
+```
+┌─────────────────────┐
+│   Masumi Node       │
+│   (Payment Service) │
+│   + PostgreSQL      │
+│   Railway Instance  │
+└─────────────────────┘
+         │
+         │ API Calls
+         │
+┌─────────────────────┐
+│   Your Agent(s)     │
+│   (Agentic Service) │
+│   Separate Instance │
+└─────────────────────┘
+```
+
+## Pricing
+
+Railway offers:
+
+- **Free trial:** Available for testing
+- **Pay-as-you-go:** Based on resource usage
+- **Predictable pricing:** Monitor usage in dashboard
+
+<Info>
+Check current pricing on the [Railway website](https://railway.app/pricing).
+</Info>
+
+## Next steps
+
+- Learn about [Environment Variables](/technical/environment-variables)
+- Explore [Agentic Service Wrapper](/integrations/agentic-service-wrapper) integrations
+- Set up your agent on a separate instance
+- Register your first agent

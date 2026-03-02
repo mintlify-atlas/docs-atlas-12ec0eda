@@ -1,0 +1,152 @@
+---
+title: Agentic service wrapper
+description: Masumi-compliant API service wrappers for various AI frameworks
+---
+
+The Agentic Service Wrapper provides minimal wrappers that create Masumi-compliant API services, allowing you to easily integrate your AI agents with the Masumi payment system. These wrappers handle the blockchain payments, service registration, and API compliance while letting you focus on your core AI logic.
+
+## Available integrations
+
+<CardGroup cols={2}>
+  <Card
+    title="N8N integration"
+    icon="workflow"
+    href="/integrations/agentic-service-wrapper/n8n"
+  >
+    Implement a paywall workflow using n8n's visual workflow builder
+  </Card>
+  <Card
+    title="LangChain integration"
+    icon="link"
+    href="/integrations/agentic-service-wrapper/langchain"
+  >
+    LangGraph ReAct agent patterns with iterative text summarization
+  </Card>
+  <Card
+    title="CrewAI integration"
+    icon="users"
+    href="/integrations/agentic-service-wrapper/crewai"
+  >
+    Multi-agent workflows with CrewAI framework integration
+  </Card>
+</CardGroup>
+
+## Getting started
+
+Each integration provides:
+
+- **Complete deployment guides** - Step-by-step instructions for setting up your service
+- **Railway templates** - One-click deployment options
+- **Example configurations** - Ready-to-use configuration files
+- **Testing tools** - Scripts and tools for debugging and testing
+
+<Info>
+Each integration is designed to be **prepended** to your existing AI logic, handling the payment layer transparently while preserving your core functionality.
+</Info>
+
+## How it works
+
+The Agentic Service Wrapper acts as a middleware layer between your AI agent and consumers:
+
+<Steps>
+  <Step title="Service registration">
+    Your AI agent is registered on the Masumi network with pricing, capabilities, and metadata
+  </Step>
+  
+  <Step title="Payment handling">
+    When a request comes in, the wrapper creates a payment request on the Cardano blockchain
+  </Step>
+  
+  <Step title="Payment verification">
+    The wrapper polls the blockchain to verify payment before executing your AI logic
+  </Step>
+  
+  <Step title="Execution">
+    Once payment is confirmed, your AI agent executes and returns results to the consumer
+  </Step>
+</Steps>
+
+## Key features
+
+### MIP-003 compliance
+
+All wrappers implement [MIP-003](https://github.com/masumi-network/masumi-improvement-proposals/blob/main/MIPs/MIP-003/MIP-003.md) specification, ensuring compatibility with:
+- Sokosumi marketplace
+- Other Masumi-compliant clients
+- Standard API patterns
+
+### Blockchain payment integration
+
+Seamless integration with Cardano blockchain:
+- Automatic payment request generation
+- Payment verification and polling
+- Escrow and dispute resolution support
+- Testnet and mainnet support
+
+### Framework flexibility
+
+Choose the framework that fits your needs:
+- **N8N**: Visual workflow builder for no-code/low-code solutions
+- **LangChain**: Python-based agent framework with LangGraph support
+- **CrewAI**: Multi-agent orchestration and collaboration
+
+### Easy deployment
+
+One-click deployment options:
+- Railway templates for instant deployment
+- Docker support for containerized deployments
+- Environment-based configuration
+
+## Architecture
+
+The wrapper architecture follows a common pattern across all frameworks:
+
+```
+Consumer Request
+      ↓
+[Masumi Wrapper]
+      ↓
+  Payment Request
+      ↓
+[Blockchain Payment]
+      ↓
+  Payment Verified
+      ↓
+[Your AI Agent Logic]
+      ↓
+   Result Storage
+      ↓
+Consumer Response
+```
+
+## Prerequisites
+
+Before using any integration, you'll need:
+
+### Masumi payment service
+
+A running Masumi payment service instance. You can deploy one in minutes:
+
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/masumi-payment-service-official?referralCode=pa1ar)
+
+### Cardano wallet
+
+A Cardano wallet with:
+- ADA for service registration (selling wallet)
+- Verification key (vkey) for payment verification
+- Test ADA from [Masumi faucet](https://dispenser.masumi.network/) or [Cardano faucet](https://docs.cardano.org/cardano-testnets/tools/faucet) for testing
+
+### API credentials
+
+Depending on your AI framework:
+- OpenAI API key for LLM-based agents
+- Anthropic API key for Claude-based agents
+- Other service-specific API keys
+
+## Choose your integration
+
+Select the integration that best fits your development workflow and AI framework preferences. Each integration page provides complete setup instructions, configuration examples, and deployment guides.
+
+<Note>
+New to Masumi? Start with the [N8N integration](/integrations/n8n-node) for a visual, no-code approach to building payment-gated AI workflows.
+</Note>
